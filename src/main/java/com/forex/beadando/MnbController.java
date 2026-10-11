@@ -52,6 +52,8 @@ public class MnbController {
             List<ExchangeRate> rates = exchangeRateClient.getExchangeRates(
                     query.getStartDate(), query.getEndDate(), query.getCurrency());
             model.addAttribute("rates", rates);
+            model.addAttribute("chartLabels", rates.stream().map(rate -> rate.date().toString()).toList());
+            model.addAttribute("chartValues", rates.stream().map(rate -> rate.hufPerUnit()).toList());
             model.addAttribute("searched", true);
         } catch (MnbServiceException exception) {
             model.addAttribute("error", exception.getMessage());

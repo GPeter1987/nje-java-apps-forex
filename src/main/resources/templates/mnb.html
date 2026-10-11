@@ -60,7 +60,9 @@
                 <h3>Nincs árfolyam erre az időszakra</h3>
                 <p>Az MNB munkaszüneti napokra és hétvégékre nem közöl új napi árfolyamot. Próbálj meg hosszabb időszakot választani.</p>
             </div>
-            <article class="table-card" th:if="${!#lists.isEmpty(rates)}">
+            <div class="row g-4" th:if="${!#lists.isEmpty(rates)}">
+            <div class="col-12"><article class="chart-card"><div class="card-heading"><div><span class="eyebrow">ÁRFOLYAM ALAKULÁSA</span><h3>HUF / 1 <span th:text="${query.currency}">EUR</span></h3></div><span class="chart-legend"><i></i> Napi középárfolyam</span></div><div class="chart-wrap"><canvas id="rateChart" aria-label="MNB árfolyamgrafikon" role="img"></canvas></div></article></div>
+            <div class="col-12"><article class="table-card">
                 <div class="card-heading"><div><span class="eyebrow">NAPI ADATOK</span><h3>Lekért árfolyamok</h3></div><span class="table-source">Forrás: Magyar Nemzeti Bank</span></div>
                 <div class="table-responsive"><table class="table align-middle rate-table">
                     <thead><tr><th>Dátum</th><th>Deviza</th><th>MNB egység</th><th class="text-end">Árfolyam (HUF / 1 egység)</th></tr></thead>
@@ -71,7 +73,7 @@
                         <td class="text-end rate-value" th:text="${#numbers.formatDecimal(rate.hufPerUnit, 1, 4)}">390,0000</td>
                     </tr></tbody>
                 </table></div>
-            </article>
+            </article></div></div>
         </section>
         <div class="initial-state" th:if="${!searched}"><span class="initial-icon">↗</span><div><strong>Indíts egy árfolyamlekérdezést</strong><p>Az eredmény itt jelenik meg táblázatban.</p></div></div>
     </div>
@@ -81,5 +83,31 @@
     <a class="navbar-brand brand-lockup" th:href="@{/}"><span class="brand-mark">Á</span> MNB ÁRFOLYAMFIGYELŐ</a>
     <span>Hivatalos devizaárfolyamok</span><span class="footer-team" th:text="${team}">Projektcsapat</span>
 </div></footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+<script th:if="${searched and !#lists.isEmpty(rates)}" th:inline="javascript">
+    const labels = /*[[${chartLabels}]]*/ [];
+    const values = /*[[${chartValues}]]*/ [];
+    const currency = /*[[${query.currency}]]*/ 'EUR';
+    new Chart(document.getElementById('rateChart'), {
+        type: 'line',
+        data: { labels, datasets: [{
+            label: `HUF / 1 ${currency}`, data: values,
+            borderColor: '#45d8b5', backgroundColor: 'rgba(69, 216, 181, .11)',
+            borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
+            pointBackgroundColor: '#45d8b5', fill: true, tension: .32
+        }] },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: { legend: { display: false }, tooltip: { callbacks: {
+                label: item => `${Number(item.raw).toLocaleString('hu-HU', {minimumFractionDigits: 2, maximumFractionDigits: 4})} HUF`
+            } } },
+            scales: {
+                x: { grid: { color: 'rgba(255,255,255,.045)' }, ticks: { color: '#89939b', maxTicksLimit: 9 } },
+                y: { grid: { color: 'rgba(255,255,255,.07)' }, ticks: { color: '#89939b', callback: value => Number(value).toLocaleString('hu-HU') } }
+            }
+        }
+    });
+</script>
 </body>
 </html>
