@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#15191d">
+    <title>MNB ÁRFOLYAMFIGYELŐ | Árfolyamok</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.8/dist/darkly/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark site-nav">
+    <div class="container page-shell">
+        <a class="navbar-brand brand-lockup" th:href="@{/}"><span class="brand-mark">Á</span> MNB ÁRFOLYAMFIGYELŐ</a>
+        <div class="navbar-nav ms-auto flex-row gap-2 gap-md-4">
+            <a class="nav-link" th:href="@{/}">Áttekintés</a>
+            <a class="nav-link active" aria-current="page" th:href="@{/mnb}">MNB árfolyamok</a>
+        </div>
+    </div>
+</nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> MNB SZOLGÁLTATÁS</div>
+                <h1>Árfolyamok</h1><p>Kérd le a kiválasztott deviza hivatalos napi árfolyamait egy megadott időszakra.</p>
+            </div>
+            <a class="back-link" th:href="@{/}">← Vissza az áttekintéshez</a>
+        </div>
+
+        <section class="query-card" aria-labelledby="query-title">
+            <div class="query-title-row"><div><span class="eyebrow">ÚJ LEKÉRDEZÉS</span><h2 id="query-title">Állítsd be a keresést</h2></div><span class="query-step">01 <i>/</i> 01</span></div>
+            <form th:action="@{/mnb}" th:object="${query}" method="post">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-4 col-md-12"><label class="form-label" for="currency">Deviza</label>
+                        <select class="form-select form-select-lg" id="currency" th:field="*{currency}" required>
+                            <option th:each="currencyCode : ${currencies}" th:value="${currencyCode}" th:text="${currencyCode}">EUR</option>
+                        </select><div class="form-text">Az árfolyamot forintban adja meg az MNB.</div>
+                    </div>
+                    <div class="col-lg-3 col-md-6"><label class="form-label" for="startDate">Kezdő dátum</label>
+                        <input class="form-control form-control-lg" id="startDate" type="date" th:field="*{startDate}" required th:attr="max=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="col-lg-3 col-md-6"><label class="form-label" for="endDate">Befejező dátum</label>
+                        <input class="form-control form-control-lg" id="endDate" type="date" th:field="*{endDate}" required th:attr="max=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="col-lg-2 col-md-12"><button class="btn btn-primary btn-lg w-100 search-button" type="submit">Lekérdezés <span aria-hidden="true">→</span></button></div>
+                </div>
+            </form>
+        </section>
+
+        <div class="alert alert-danger mt-4" role="alert" th:if="${error}" th:text="${error}">A lekérdezés nem sikerült.</div>
+
+        <section class="results-section" th:if="${searched}" aria-live="polite">
+            <div class="results-heading">
+                <div><div class="eyebrow">LEKÉRDEZÉS EREDMÉNYE</div><h2 th:text="${query.currency} + ' / HUF'">EUR / HUF</h2>
+                    <p th:text="${#temporals.format(query.startDate, 'yyyy. MM. dd.')} + ' – ' + #temporals.format(query.endDate, 'yyyy. MM. dd.')">Időszak</p>
+                </div><span class="result-count" th:text="${#lists.size(rates)} + ' adatpont'">0 adatpont</span>
+            </div>
+            <div class="empty-state" th:if="${#lists.isEmpty(rates)}"><span class="empty-icon">⌁</span>
+                <h3>Nincs árfolyam erre az időszakra</h3>
+                <p>Az MNB munkaszüneti napokra és hétvégékre nem közöl új napi árfolyamot. Próbálj meg hosszabb időszakot választani.</p>
+            </div>
+            <article class="table-card" th:if="${!#lists.isEmpty(rates)}">
+                <div class="card-heading"><div><span class="eyebrow">NAPI ADATOK</span><h3>Lekért árfolyamok</h3></div><span class="table-source">Forrás: Magyar Nemzeti Bank</span></div>
+                <div class="table-responsive"><table class="table align-middle rate-table">
+                    <thead><tr><th>Dátum</th><th>Deviza</th><th>MNB egység</th><th class="text-end">Árfolyam (HUF / 1 egység)</th></tr></thead>
+                    <tbody><tr th:each="rate : ${rates}">
+                        <td th:text="${#temporals.format(rate.date, 'yyyy. MM. dd.')}">2026. 01. 01.</td>
+                        <td><span class="currency-pill" th:text="${rate.currency}">EUR</span></td>
+                        <td th:text="${rate.sourceUnit + ' ' + rate.currency}">1 EUR</td>
+                        <td class="text-end rate-value" th:text="${#numbers.formatDecimal(rate.hufPerUnit, 1, 4)}">390,0000</td>
+                    </tr></tbody>
+                </table></div>
+            </article>
+        </section>
+        <div class="initial-state" th:if="${!searched}"><span class="initial-icon">↗</span><div><strong>Indíts egy árfolyamlekérdezést</strong><p>Az eredmény itt jelenik meg táblázatban.</p></div></div>
+    </div>
+</main>
+
+<footer class="site-footer"><div class="container page-shell footer-inner">
+    <a class="navbar-brand brand-lockup" th:href="@{/}"><span class="brand-mark">Á</span> MNB ÁRFOLYAMFIGYELŐ</a>
+    <span>Hivatalos devizaárfolyamok</span><span class="footer-team" th:text="${team}">Projektcsapat</span>
+</div></footer>
+</body>
+</html>
