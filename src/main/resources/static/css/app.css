@@ -71,10 +71,55 @@ a { text-decoration: none; }
 .footer-inner .brand-mark { width: 26px; height: 26px; border-radius: 8px; font-size: .8rem; }
 .footer-team { color: #88969c; text-align: right; }
 
+/* MNB query and results */
+.rates-page { min-height: calc(100vh - 155px); padding: 56px 0 78px; background: radial-gradient(ellipse at 75% 0, rgba(43,116,102,.1), transparent 32%); }
+.rates-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+.rates-heading h1 { margin: 12px 0 8px; font-size: clamp(2rem, 4vw, 2.75rem); letter-spacing: -.05em; }
+.rates-heading p { margin: 0; color: var(--muted); }
+.back-link { margin-bottom: 5px; color: #9eabb0; font-size: .84rem; white-space: nowrap; }
+.back-link:hover { color: var(--accent); }
+.query-card, .chart-card, .table-card { border: 1px solid var(--line); border-radius: 14px; background: rgba(28,34,39,.92); box-shadow: 0 14px 42px rgba(0,0,0,.12); }
+.query-card { padding: 25px 27px 27px; }
+.query-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+.query-title-row > div { display: flex; align-items: baseline; gap: 15px; }
+.query-title-row h2 { margin: 0; font-size: 1.25rem; letter-spacing: -.025em; }
+.query-step { color: #7e8b91; font-size: .76rem; }.query-step i { color: #48545b; font-style: normal; margin: 0 3px; }
+.form-label { color: #cdd5d7; font-size: .8rem; font-weight: 600; }
+.form-control, .form-select { --bs-body-bg: #171d21; --bs-body-color: #e5ebec; --bs-border-color: rgba(255,255,255,.12); border-radius: 9px; }
+.form-control:focus, .form-select:focus { border-color: rgba(69,216,181,.7); box-shadow: 0 0 0 .2rem rgba(69,216,181,.13); }
+.form-text { color: #78868d; font-size: .72rem; }
+.search-button { min-height: 48px; padding-left: 9px; padding-right: 9px; font-size: .93rem; }
+.search-button span { margin-left: 5px; }
+.results-section { margin-top: 44px; }
+.results-heading { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
+.results-heading h2 { margin: 8px 0 4px; font-size: 1.7rem; letter-spacing: -.04em; }
+.results-heading p { margin: 0; color: #8e9ba1; font-size: .84rem; }
+.result-count { margin-bottom: 4px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; color: #aab6bb; font-size: .73rem; }
+.chart-card, .table-card { padding: 22px 24px; }
+.card-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.card-heading h3 { margin: 7px 0 0; color: #e8eeee; font-size: 1.05rem; }
+.chart-legend { color: #8f9ca1; font-size: .73rem; }
+.chart-legend i { display: inline-block; width: 7px; height: 7px; margin: 0 6px 1px 0; border-radius: 50%; background: var(--accent); }
+.chart-wrap { position: relative; height: 310px; }
+.table-source { color: #849198; font-size: .73rem; }
+.rate-table { margin: 0; --bs-table-bg: transparent; --bs-table-color: #cbd4d6; --bs-table-border-color: rgba(255,255,255,.07); }
+.rate-table thead th { padding-top: 11px; padding-bottom: 11px; color: #819096; font-size: .69rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.rate-table tbody td { padding-top: 14px; padding-bottom: 14px; font-size: .84rem; }
+.currency-pill { display: inline-block; min-width: 43px; padding: 4px 8px; border: 1px solid rgba(69,216,181,.23); border-radius: 6px; background: rgba(69,216,181,.07); color: var(--accent); text-align: center; font-size: .72rem; font-weight: 700; }
+.rate-value { color: #e7f1ef !important; font-variant-numeric: tabular-nums; font-weight: 650; }
+.empty-state { padding: 44px 24px; border: 1px dashed rgba(255,255,255,.15); border-radius: 13px; text-align: center; background: rgba(28,34,39,.6); }
+.empty-icon { display: inline-grid; width: 44px; height: 44px; place-items: center; margin-bottom: 12px; border-radius: 13px; background: rgba(69,216,181,.1); color: var(--accent); font-size: 1.45rem; }
+.empty-state h3 { font-size: 1rem; }.empty-state p { max-width: 470px; margin: 8px auto 0; color: #8f9ca1; font-size: .84rem; line-height: 1.7; }
+.initial-state { display: flex; align-items: center; gap: 15px; margin-top: 25px; padding: 22px; border: 1px dashed rgba(255,255,255,.13); border-radius: 12px; color: #c5cfd1; }
+.initial-icon { display: grid; flex: 0 0 40px; width: 40px; height: 40px; place-items: center; border-radius: 11px; background: rgba(69,216,181,.1); color: var(--accent); font-size: 1.3rem; }
+.initial-state strong { font-size: .9rem; }.initial-state p { margin: 4px 0 0; color: #829096; font-size: .8rem; }
+.alert-danger { border-color: rgba(235,107,107,.28); background: rgba(115,40,44,.25); color: #ffb1b1; }
+
 @media (max-width: 991.98px) {
     .hero-grid { grid-template-columns: 1fr 1fr; gap: 34px; }
     .hero-section { padding: 70px 0; }
     .hero-visual { padding: 21px; transform: none; }
+    .search-button { margin-top: 5px; }
 }
 @media (max-width: 767.98px) {
     .site-nav { min-height: 66px; }
@@ -96,6 +141,18 @@ a { text-decoration: none; }
     .footer-inner { min-height: unset; padding-top: 17px; padding-bottom: 17px; flex-wrap: wrap; justify-content: flex-start; }
     .footer-inner > span:nth-child(2) { margin-left: auto; text-align: right; }
     .footer-team { flex-basis: 100%; text-align: left; }
+    .rates-page { padding: 38px 0 54px; }
+    .rates-heading { display: block; }
+    .back-link { display: inline-block; margin-top: 15px; }
+    .query-card { padding: 21px 18px; }
+    .query-title-row > div { flex-wrap: wrap; gap: 6px 12px; }
+    .query-title-row { margin-bottom: 19px; }
+    .chart-card, .table-card { padding: 19px 15px; }
+    .chart-wrap { height: 250px; }
+    .card-heading { align-items: flex-start; }
+    .table-source { text-align: right; }
+    .results-section { margin-top: 35px; }
+    .results-heading h2 { font-size: 1.4rem; }
 }
 @media (max-width: 420px) {
     .page-shell { padding-left: 18px; padding-right: 18px; }
@@ -104,4 +161,5 @@ a { text-decoration: none; }
     .visual-pair { margin-top: 30px; }
     .visual-pair > span:first-child { font-size: 1.3rem; }
     .visual-chart { height: 164px; }
+    .footer-inner > span:nth-child(2) { display: none; }
 }
