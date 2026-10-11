@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#15191d">
+    <meta name="description" content="MNB hivatalos árfolyamok lekérdezése és megjelenítése grafikonon.">
+    <title>MNB ÁRFOLYAMFIGYELŐ | Hivatalos árfolyamadatok</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.8/dist/darkly/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark site-nav">
+    <div class="container page-shell">
+        <a class="navbar-brand brand-lockup" th:href="@{/}"><span class="brand-mark">Á</span> MNB ÁRFOLYAMFIGYELŐ</a>
+        <div class="navbar-nav ms-auto flex-row gap-2 gap-md-4">
+            <a class="nav-link active" aria-current="page" th:href="@{/}">Áttekintés</a>
+            <a class="nav-link" th:href="@{/mnb}">MNB árfolyamok</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <section class="hero-section">
+        <div class="container page-shell hero-grid">
+            <div class="hero-copy">
+                <div class="eyebrow"><span class="status-dot"></span> HIVATALOS MNB ADATOK</div>
+                <h1>Árfolyamok.<br><span class="text-accent">Tisztán átláthatóan.</span></h1>
+                <p class="hero-lead">Keresd vissza a Magyar Nemzeti Bank hivatalos napi devizaárfolyamait, és kövesd az alakulásukat egyetlen grafikonon.</p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary btn-lg" th:href="@{/mnb}">Árfolyam lekérdezése <span aria-hidden="true">→</span></a>
+                    <span class="action-note">Ingyenes • Hivatalos forrás • Egyszerűen kezelhető</span>
+                </div>
+            </div>
+            <div class="hero-visual" aria-label="Stilizált árfolyamgrafikon illusztráció">
+                <div class="visual-topline"><span>DEVIZAPIACI KÖRKÉP</span><span class="live-label"><i></i> MNB</span></div>
+                <div class="visual-pair"><span>EUR <b>/</b> HUF</span><span class="visual-change">NAPI ÁRFOLYAM</span></div>
+                <div class="visual-chart">
+                    <div class="chart-gridline grid-one"></div><div class="chart-gridline grid-two"></div><div class="chart-gridline grid-three"></div>
+                    <svg viewBox="0 0 520 190" role="img" aria-label="Emelkedő árfolyamvonal illusztráció" preserveAspectRatio="none">
+                        <defs><linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#42d6b4" stop-opacity=".25"/><stop offset="100%" stop-color="#42d6b4" stop-opacity="0"/></linearGradient></defs>
+                        <path class="chart-area" d="M0 148 C35 140 44 116 78 127 S124 151 158 112 S204 119 238 96 S285 115 317 80 S359 91 389 60 S433 76 460 45 S492 49 520 22 L520 190 L0 190 Z"/>
+                        <path class="chart-line" d="M0 148 C35 140 44 116 78 127 S124 151 158 112 S204 119 238 96 S285 115 317 80 S359 91 389 60 S433 76 460 45 S492 49 520 22"/>
+                        <circle cx="520" cy="22" r="5" class="chart-point"/>
+                    </svg>
+                    <div class="chart-dates"><span>HISTORIKUS ADATOK</span><span>LEKÉRDEZÉS SZERINT</span></div>
+                </div>
+                <div class="visual-footer"><span>Forrás</span><strong>Magyar Nemzeti Bank</strong><span class="shield-icon">✓</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-space">
+        <div class="container page-shell">
+            <div class="section-heading">
+                <div><div class="eyebrow">A LEKÉRDEZÉSTŐL A GRAFIKONIG</div><h2>Az árfolyamadatok, ahogy szükséged van rájuk.</h2></div>
+                <p>Válaszd ki a devizát és az időszakot. Az alkalmazás lekéri az MNB adatait, majd táblázatban és grafikonon is megmutatja az eredményt.</p>
+            </div>
+            <div class="row g-3 feature-row">
+                <div class="col-md-4"><article class="feature-card"><span class="feature-number">01</span><div class="feature-icon">↗</div><h3>Válaszd ki a devizát</h3><p>EUR, USD, GBP és további devizák árfolyamait keresheted vissza.</p></article></div>
+                <div class="col-md-4"><article class="feature-card"><span class="feature-number">02</span><div class="feature-icon">▦</div><h3>Állítsd be az időszakot</h3><p>Add meg a kezdő és a záró dátumot a naptármezők segítségével.</p></article></div>
+                <div class="col-md-4"><article class="feature-card"><span class="feature-number">03</span><div class="feature-icon">⌁</div><h3>Lásd az alakulását</h3><p>A lekért értékeket áttekinthető táblázat és dinamikus grafikon mutatja.</p></article></div>
+            </div>
+            <div class="source-note"><span class="source-icon">i</span><span>Az árfolyamadatokat a <strong>Magyar Nemzeti Bank hivatalos szolgáltatása</strong> biztosítja.</span><a th:href="@{/mnb}">Kezdj egy lekérdezést <span aria-hidden="true">→</span></a></div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer"><div class="container page-shell footer-inner"><a class="navbar-brand brand-lockup" th:href="@{/}"><span class="brand-mark">Á</span> MNB ÁRFOLYAMFIGYELŐ</a><span>Hivatalos devizaárfolyamok</span><span class="footer-team" th:text="${team}">Projektcsapat</span></div></footer>
+</body>
+</html>
