@@ -12,6 +12,7 @@ import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.pricing.PricingGetRequest;
 import com.oanda.v20.pricing.PricingGetResponse;
 import com.oanda.v20.primitives.InstrumentName;
+import com.oanda.v20.trade.Trade;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -123,5 +124,21 @@ public class ForexController {
         model.addAttribute("units", messageOpenPosition.getUnits());
         model.addAttribute("id", strOut);
         return "result_open_position";
+    }
+
+    @GetMapping("/positions")
+    @ResponseBody
+    public String positions() {
+        String strOut = "Open positions:<br>";
+        try {
+            List<Trade> trades = ctx.trade.listOpen(Config.ACCOUNTID).getTrades();
+            for (Trade trade : trades)
+                strOut += trade.getId() + ", " + trade.getInstrument() + ", " + trade.getOpenTime() + ", "
+                        + trade.getCurrentUnits() + ", " + trade.getPrice() + ", " + trade.getUnrealizedPL() + "<br>";
+            return strOut;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
