@@ -5,6 +5,9 @@ import com.oanda.v20.account.AccountSummary;
 import com.oanda.v20.instrument.Candlestick;
 import com.oanda.v20.instrument.InstrumentCandlesRequest;
 import com.oanda.v20.instrument.InstrumentCandlesResponse;
+import com.oanda.v20.order.MarketOrderRequest;
+import com.oanda.v20.order.OrderCreateRequest;
+import com.oanda.v20.order.OrderCreateResponse;
 import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.pricing.PricingGetRequest;
 import com.oanda.v20.pricing.PricingGetResponse;
@@ -92,5 +95,33 @@ public class ForexController {
         model.addAttribute("granularity", messageHistPrice.getGranularity());
         model.addAttribute("price", strOut);
         return "result_hist_prices";
+    }
+
+    @GetMapping("/open_position")
+    public String openPosition(Model model) {
+        model.addAttribute("param", new MessageOpenPosition());
+        return "form_open_position";
+    }
+
+    @PostMapping("/open_position")
+    public String openPosition2(@ModelAttribute MessageOpenPosition messageOpenPosition, Model model) {
+        String strOut;
+        try {
+            InstrumentName instrument = new InstrumentName(messageOpenPosition.getInstrument());
+            OrderCreateRequest request = new OrderCreateRequest(Config.ACCOUNTID);
+            MarketOrderRequest marketorderrequest = new MarketOrderRequest();
+            marketorderrequest.setInstrument(instrument);
+            // Ha pozitív, akkor LONG, ha negatív, akkor SHORT:
+            marketorderrequest.setUnits(messageOpenPosition.getUnits());
+            request.setOrder(marketorderrequest);
+            OrderCreateResponse response = ctx.order.create(request);
+            strOut = "tradeId: " + response.getOrderFillTransaction().getId();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        model.addAttribute("instr", messageOpenPosition.getInstrument());
+        model.addAttribute("units", messageOpenPosition.getUnits());
+        model.addAttribute("id", strOut);
+        return "result_open_position";
     }
 }
