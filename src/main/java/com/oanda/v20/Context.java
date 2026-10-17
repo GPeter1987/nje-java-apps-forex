@@ -20,6 +20,8 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -104,6 +106,18 @@ public class Context {
 
         this.gson = new GsonBuilder()
             .setPrettyPrinting()
+            // Módosítás az eredeti könyvtárhoz képest: Java 16+ alatt a modulrendszer
+            // tiltja a java.lang.Throwable privát mezőinek elérését, ezért a hibaválaszok
+            // (RequestException) deszerializálásakor ezeket a mezőket ki kell hagyni.
+            .setExclusionStrategies(new ExclusionStrategy() {
+                public boolean shouldSkipField(FieldAttributes f) {
+                    return f.getDeclaringClass() == Throwable.class;
+                }
+
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+            })
             .registerTypeAdapter(Transaction.class, new TransactionAdapter())
             .registerTypeAdapter(Order.class, new OrderAdapter())
             .registerTypeAdapterFactory(
