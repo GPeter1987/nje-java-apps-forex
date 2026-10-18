@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-HistÁr')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('histar')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA HISTORIKUS ADATOK</div>
+                <h1>Historikus árak</h1>
+                <p>Válassz instrumentumot és időfelbontást, és megmutatjuk a 10 utolsó gyertya árait.</p>
+            </div>
+            <a class="back-link" th:href="@{/}">← Vissza a főoldalra</a>
+        </div>
+
+        <section class="query-card" aria-labelledby="query-title">
+            <div class="query-title-row"><div><span class="eyebrow">ÚJ LEKÉRDEZÉS</span><h2 id="query-title">Állítsd be a lekérdezést</h2></div></div>
+            <form th:action="@{/hist_prices}" th:object="${param}" method="post">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-5 col-md-6"><label class="form-label" for="instrument">Instrumentum</label>
+                        <select class="form-select form-select-lg" id="instrument" th:field="*{instrument}" required>
+                            <option th:each="instr : ${instruments}" th:value="${instr}" th:text="${instr}">EUR_USD</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6"><label class="form-label" for="granularity">Granularity (időfelbontás)</label>
+                        <select class="form-select form-select-lg" id="granularity" th:field="*{granularity}" required>
+                            <option th:each="g : ${granularities}" th:value="${g.key}" th:text="${g.value}">D – napi</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-12"><button class="btn btn-primary btn-lg w-100 search-button" type="submit">Lekérdezés <span aria-hidden="true">→</span></button></div>
+                </div>
+            </form>
+        </section>
+        <div class="initial-state"><span class="initial-icon">⌁</span><div><strong>Egy gyertya egy időszak árait foglalja össze</strong><p>Nyitó, legmagasabb, legalacsonyabb és záró ár az adott percre, órára, napra, hétre vagy hónapra.</p></div></div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

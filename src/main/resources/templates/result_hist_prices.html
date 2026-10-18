@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-HistÁr')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('histar')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA HISTORIKUS ADATOK</div>
+                <h1>Historikus árak</h1>
+                <p>Instrumentum: <strong th:text="${instr}">EUR_USD</strong> · Granularity: <strong th:text="${granularity}">D</strong></p>
+            </div>
+            <a class="back-link" th:href="@{/hist_prices}">← Másik lekérdezés</a>
+        </div>
+
+        <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}">A lekérdezés nem sikerült.</div>
+
+        <article class="table-card" th:if="${candles}">
+            <div class="card-heading"><div><span class="eyebrow">10 UTOLSÓ ÁR</span><h3 th:text="${instr} + ' · ' + ${granularity}">EUR_USD · D</h3></div><span class="table-source">Forrás: Oanda v20 API (középár)</span></div>
+            <div class="table-responsive"><table class="table align-middle rate-table">
+                <thead><tr><th>#</th><th>Időpont (UTC)</th><th class="text-end">Nyitó</th><th class="text-end">Max</th><th class="text-end">Min</th><th class="text-end">Záró</th><th class="text-end">Lezárt</th></tr></thead>
+                <tbody><tr th:each="candle, stat : ${candles}">
+                    <td th:text="${stat.count}">1</td>
+                    <td th:text="${#strings.replace(#strings.substring(candle.time.toString(), 0, 19), 'T', ' ')}">2026-01-01 00:00:00</td>
+                    <td class="text-end" th:text="${candle.mid.o}">1.08000</td>
+                    <td class="text-end" th:text="${candle.mid.h}">1.08100</td>
+                    <td class="text-end" th:text="${candle.mid.l}">1.07900</td>
+                    <td class="text-end rate-value" th:text="${candle.mid.c}">1.08050</td>
+                    <td class="text-end" th:text="${candle.complete} ? 'Igen' : 'Folyamatban'">Igen</td>
+                </tr></tbody>
+            </table></div>
+        </article>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

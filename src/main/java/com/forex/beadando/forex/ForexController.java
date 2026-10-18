@@ -1,6 +1,7 @@
 package com.forex.beadando.forex;
 
 import com.oanda.v20.Context;
+import com.oanda.v20.RequestException;
 import com.oanda.v20.account.AccountSummary;
 import com.oanda.v20.instrument.Candlestick;
 import com.oanda.v20.instrument.InstrumentCandlesRequest;
@@ -23,7 +24,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.oanda.v20.instrument.CandlestickGranularity.*;
 
@@ -38,6 +41,18 @@ public class ForexController {
         return List.of("EUR_USD", "GBP_USD", "USD_JPY", "USD_CHF", "AUD_USD", "USD_CAD", "NZD_USD", "EUR_GBP", "EUR_JPY");
     }
 
+    // A Forex-HistÁr lenyíló listájának értékei: ugyanazok, amelyeket a histPrices2 switch-e kezel
+    @ModelAttribute("granularities")
+    public Map<String, String> granularities() {
+        Map<String, String> g = new LinkedHashMap<>();
+        g.put("M1", "M1 – 1 perces");
+        g.put("H1", "H1 – 1 órás");
+        g.put("D", "D – napi");
+        g.put("W", "W – heti");
+        g.put("M", "M – havi");
+        return g;
+    }
+
     @GetMapping("/account_info")
     public String accountInfo(Model model) {
         try {
@@ -45,7 +60,7 @@ public class ForexController {
             model.addAttribute("summary", summary);
         } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("error", "A számlainformációk lekérdezése nem sikerült: " + e.getMessage());
+            model.addAttribute("error", "A számlainformációk lekérdezése nem sikerült: " + errorText(e));
         }
         return "account_info";
     }
@@ -70,7 +85,7 @@ public class ForexController {
             model.addAttribute("prices", resp.getPrices());
         } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("error", "Az aktuális ár lekérdezése nem sikerült: " + e.getMessage());
+            model.addAttribute("error", "Az aktuális ár lekérdezése nem sikerült: " + errorText(e));
         }
         model.addAttribute("instr", messageActPrice.getInstrument());
         model.addAttribute("price", strOut);
@@ -85,7 +100,7 @@ public class ForexController {
 
     @PostMapping("/hist_prices")
     public String histPrices2(@ModelAttribute MessageHistPrice messageHistPrice, Model model) {
-        String strOut;
+        String strOut = "";
         try {
             InstrumentCandlesRequest request = new InstrumentCandlesRequest(new InstrumentName(messageHistPrice.getInstrument()));
             switch (messageHistPrice.getGranularity()) {
@@ -100,8 +115,11 @@ public class ForexController {
             strOut = "";
             for (Candlestick candle : resp.getCandles())
                 strOut += candle.getTime() + "\t" + candle.getMid().getC() + ";";
+            // A sablon táblázatához a gyertyákat is átadjuk (idő, nyitó, max, min, záró ár)
+            model.addAttribute("candles", resp.getCandles());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            model.addAttribute("error", "A historikus árak lekérdezése nem sikerült: " + errorText(e));
         }
         model.addAttribute("instr", messageHistPrice.getInstrument());
         model.addAttribute("granularity", messageHistPrice.getGranularity());
@@ -170,5 +188,12 @@ public class ForexController {
         }
         model.addAttribute("tradeId", strOut);
         return "result_close_position";
+    }
+
+    // Az Oanda hibaválaszainál (RequestException) a szöveg az errorMessage mezőben van, nem a getMessage()-ben
+    private String errorText(Exception e) {
+        if (e instanceof RequestException re && re.getErrorMessage() != null)
+            return re.getErrorMessage();
+        return e.getMessage() != null ? e.getMessage() : e.toString();
     }
 }
