@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-Zár')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('zar')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA KERESKEDÉS</div>
+                <h1 th:text="${error} ? 'A pozíció nem zárult le' : 'Pozíció lezárva'">Pozíció lezárva</h1>
+                <p>Trade ID: <strong th:text="${id}">123</strong></p>
+            </div>
+            <a class="back-link" th:href="@{/close_position}">← Másik pozíció zárása</a>
+        </div>
+
+        <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}">A zárás nem sikerült.</div>
+
+        <th:block th:if="${error == null}">
+            <div class="row g-3 mb-4" th:if="${fill}">
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">TRADE ID</span>
+                    <strong th:text="${id}">123</strong>
+                    <span th:text="${tradeId}">Closed tradeId= 123</span>
+                </article></div>
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">ZÁRÓÁR</span>
+                    <strong th:text="${fill.price}">1.08050</strong>
+                    <span th:text="${fill.instrument}">EUR_USD</span>
+                </article></div>
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">REALIZÁLT P/L</span>
+                    <strong th:text="${fill.pl}">0.0500</strong>
+                    <span>A számla pénznemében</span>
+                </article></div>
+            </div>
+            <div class="initial-state" th:unless="${fill}"><span class="initial-icon">✓</span><div><strong th:text="${tradeId}">Closed tradeId= 123</strong><p>A zárási megbízást az Oanda elfogadta.</p></div></div>
+            <p class="mt-3"><a class="back-link" th:href="@{/positions}">Nyitott pozíciók megtekintése →</a></p>
+        </th:block>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

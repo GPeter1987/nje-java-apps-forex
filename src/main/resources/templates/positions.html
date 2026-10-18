@@ -34,7 +34,7 @@
                         <td class="text-end" th:text="${trade.currentUnits}">10</td>
                         <td class="text-end" th:text="${trade.price}">1.08000</td>
                         <td class="text-end rate-value" th:text="${trade.unrealizedPL}">0.0000</td>
-                        <td class="text-end"><a class="back-link" th:href="@{/close_position}">Zárás →</a></td>
+                        <td class="text-end"><a class="back-link" th:href="@{/close_position(tradeId=${trade.id})}">Zárás →</a></td>
                     </tr></tbody>
                 </table></div>
             </article>

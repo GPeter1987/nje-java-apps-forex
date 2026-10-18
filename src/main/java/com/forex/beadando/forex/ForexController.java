@@ -15,12 +15,14 @@ import com.oanda.v20.pricing.PricingGetResponse;
 import com.oanda.v20.primitives.InstrumentName;
 import com.oanda.v20.trade.Trade;
 import com.oanda.v20.trade.TradeCloseRequest;
+import com.oanda.v20.trade.TradeCloseResponse;
 import com.oanda.v20.trade.TradeSpecifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -187,8 +189,12 @@ public class ForexController {
     }
 
     @GetMapping("/close_position")
-    public String closePosition(Model model) {
-        model.addAttribute("param", new MessageClosePosition());
+    public String closePosition(@RequestParam(required = false) Integer tradeId, Model model) {
+        MessageClosePosition param = new MessageClosePosition();
+        // A Forex-Poz táblázat "Zárás" linkje előre kitölti a tradeId-t (?tradeId=...)
+        if (tradeId != null)
+            param.setTradeId(tradeId);
+        model.addAttribute("param", param);
         return "form_close_position";
     }
 
@@ -197,11 +203,15 @@ public class ForexController {
         String tradeId = messageClosePosition.getTradeId() + "";
         String strOut = "Closed tradeId= " + tradeId;
         try {
-            ctx.trade.close(new TradeCloseRequest(Config.ACCOUNTID, new TradeSpecifier(tradeId)));
+            TradeCloseResponse response = ctx.trade.close(new TradeCloseRequest(Config.ACCOUNTID, new TradeSpecifier(tradeId)));
+            // A zárási ár és a realizált P/L a záró megbízás teljesüléséből olvasható ki
+            model.addAttribute("fill", response.getOrderFillTransaction());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            model.addAttribute("error", "A(z) " + tradeId + " azonosítójú pozíció zárása nem sikerült: " + errorText(e));
         }
         model.addAttribute("tradeId", strOut);
+        model.addAttribute("id", tradeId);
         return "result_close_position";
     }
 
