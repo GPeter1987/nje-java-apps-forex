@@ -32,6 +32,12 @@ public class ForexController {
 
     Context ctx = new Context(Config.URL, Config.TOKEN);
 
+    // A lenyíló listák instrumentumai (Forex-AktÁr, Forex-HistÁr, Forex-Nyit)
+    @ModelAttribute("instruments")
+    public List<String> instruments() {
+        return List.of("EUR_USD", "GBP_USD", "USD_JPY", "USD_CHF", "AUD_USD", "USD_CAD", "NZD_USD", "EUR_GBP", "EUR_JPY");
+    }
+
     @GetMapping("/account_info")
     public String accountInfo(Model model) {
         try {
@@ -60,8 +66,11 @@ public class ForexController {
             PricingGetResponse resp = ctx.pricing.get(request);
             for (ClientPrice price : resp.getPrices())
                 strOut += price + "<br>";
+            // A sablon táblázatához az árobjektumokat is átadjuk (bid, ask, idő külön-külön)
+            model.addAttribute("prices", resp.getPrices());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            model.addAttribute("error", "Az aktuális ár lekérdezése nem sikerült: " + e.getMessage());
         }
         model.addAttribute("instr", messageActPrice.getInstrument());
         model.addAttribute("price", strOut);
