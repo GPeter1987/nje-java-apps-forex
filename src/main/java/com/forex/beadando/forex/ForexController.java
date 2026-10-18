@@ -21,7 +21,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -170,19 +169,21 @@ public class ForexController {
     }
 
     @GetMapping("/positions")
-    @ResponseBody
-    public String positions() {
+    public String positions(Model model) {
         String strOut = "Open positions:<br>";
         try {
             List<Trade> trades = ctx.trade.listOpen(Config.ACCOUNTID).getTrades();
             for (Trade trade : trades)
                 strOut += trade.getId() + ", " + trade.getInstrument() + ", " + trade.getOpenTime() + ", "
                         + trade.getCurrentUnits() + ", " + trade.getPrice() + ", " + trade.getUnrealizedPL() + "<br>";
-            return strOut;
+            // A feladat táblázatot kér: a sablon a trade-ek listájából építi fel
+            model.addAttribute("trades", trades);
         } catch (Exception e) {
             e.printStackTrace();
+            model.addAttribute("error", "A nyitott pozíciók lekérdezése nem sikerült: " + errorText(e));
         }
-        return null;
+        model.addAttribute("positions", strOut);
+        return "positions";
     }
 
     @GetMapping("/close_position")
