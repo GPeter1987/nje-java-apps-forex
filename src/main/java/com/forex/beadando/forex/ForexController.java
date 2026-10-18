@@ -135,19 +135,33 @@ public class ForexController {
 
     @PostMapping("/open_position")
     public String openPosition2(@ModelAttribute MessageOpenPosition messageOpenPosition, Model model) {
-        String strOut;
-        try {
-            InstrumentName instrument = new InstrumentName(messageOpenPosition.getInstrument());
-            OrderCreateRequest request = new OrderCreateRequest(Config.ACCOUNTID);
-            MarketOrderRequest marketorderrequest = new MarketOrderRequest();
-            marketorderrequest.setInstrument(instrument);
-            // Ha pozitív, akkor LONG, ha negatív, akkor SHORT:
-            marketorderrequest.setUnits(messageOpenPosition.getUnits());
-            request.setOrder(marketorderrequest);
-            OrderCreateResponse response = ctx.order.create(request);
-            strOut = "tradeId: " + response.getOrderFillTransaction().getId();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        String strOut = "";
+        if (messageOpenPosition.getUnits() == 0) {
+            // 0 mennyiséggel nincs mit megnyitni, ilyenkor nem is küldünk megbízást
+            model.addAttribute("error", "A mennyiség nem lehet 0. Pozitív szám: Long, negatív szám: Short pozíció.");
+        } else {
+            try {
+                InstrumentName instrument = new InstrumentName(messageOpenPosition.getInstrument());
+                OrderCreateRequest request = new OrderCreateRequest(Config.ACCOUNTID);
+                MarketOrderRequest marketorderrequest = new MarketOrderRequest();
+                marketorderrequest.setInstrument(instrument);
+                // Ha pozitív, akkor LONG, ha negatív, akkor SHORT:
+                marketorderrequest.setUnits(messageOpenPosition.getUnits());
+                request.setOrder(marketorderrequest);
+                OrderCreateResponse response = ctx.order.create(request);
+                if (response.getOrderFillTransaction() != null) {
+                    strOut = "tradeId: " + response.getOrderFillTransaction().getId();
+                    model.addAttribute("fill", response.getOrderFillTransaction());
+                } else if (response.getOrderCancelTransaction() != null) {
+                    // Pl. zárt piacnál az Oanda nem teljesíti, hanem visszavonja a megbízást
+                    model.addAttribute("error", "Az Oanda visszavonta a megbízást: "
+                            + response.getOrderCancelTransaction().getReason()
+                            + ". A devizapiac hétfőtől péntekig van nyitva.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                model.addAttribute("error", "A pozíció megnyitása nem sikerült: " + errorText(e));
+            }
         }
         model.addAttribute("instr", messageOpenPosition.getInstrument());
         model.addAttribute("units", messageOpenPosition.getUnits());

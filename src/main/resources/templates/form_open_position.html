@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-Nyit')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('nyit')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA KERESKEDÉS</div>
+                <h1>Pozíció nyitása</h1>
+                <p>Válassz instrumentumot és mennyiséget, és megnyitjuk a pozíciót piaci áron.</p>
+            </div>
+            <a class="back-link" th:href="@{/positions}">Nyitott pozíciók →</a>
+        </div>
+
+        <section class="query-card" aria-labelledby="query-title">
+            <div class="query-title-row"><div><span class="eyebrow">ÚJ MEGBÍZÁS</span><h2 id="query-title">Piaci áras megbízás</h2></div></div>
+            <form th:action="@{/open_position}" th:object="${param}" method="post">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-5 col-md-6"><label class="form-label" for="instrument">Instrumentum</label>
+                        <select class="form-select form-select-lg" id="instrument" th:field="*{instrument}" required>
+                            <option th:each="instr : ${instruments}" th:value="${instr}" th:text="${instr}">EUR_USD</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6"><label class="form-label" for="units">Mennyiség (egység)</label>
+                        <input class="form-control form-control-lg" id="units" type="number" step="1" th:field="*{units}" required>
+                        <div class="form-text">Pozitív szám: Long (vétel), negatív szám: Short (eladás).</div>
+                    </div>
+                    <div class="col-lg-3 col-md-12"><button class="btn btn-primary btn-lg w-100 search-button" type="submit">Pozíció nyitása <span aria-hidden="true">→</span></button></div>
+                </div>
+            </form>
+        </section>
+        <div class="initial-state"><span class="initial-icon">!</span><div><strong>A megbízás azonnal, piaci áron teljesül</strong><p>Ez egy demo számla, valódi pénz nincs rajta. A devizapiac hétfőtől péntekig van nyitva, hétvégén az Oanda visszavonja a megbízást.</p></div></div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>
