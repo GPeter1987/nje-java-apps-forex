@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<!-- Közös oldalelemek: minden oldal ezeket húzza be th:replace-szel -->
+
+<head th:fragment="head(title)">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#15191d">
+    <title th:text="'MNB ÁRFOLYAMFIGYELŐ | ' + ${title}">MNB ÁRFOLYAMFIGYELŐ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.8/dist/darkly/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<!-- active: az aktuális menüpont azonosítója (home, soap, account, aktar, histar, nyit, poz, zar) -->
+<nav th:fragment="nav(active)" class="navbar navbar-expand-lg navbar-dark site-nav">
+    <div class="container page-shell">
+        <a class="navbar-brand brand-lockup" th:href="@{/}"><span class="brand-mark">Á</span> MNB ÁRFOLYAMFIGYELŐ</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu"
+                aria-controls="mainMenu" aria-expanded="false" aria-label="Menü megnyitása">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainMenu">
+            <div class="navbar-nav ms-auto gap-lg-3">
+                <a class="nav-link" th:classappend="${active == 'home'} ? 'active'" th:attrappend="aria-current=${active == 'home'} ? 'page'" th:href="@{/}">Főoldal</a>
+                <a class="nav-link" th:classappend="${active == 'soap'} ? 'active'" th:attrappend="aria-current=${active == 'soap'} ? 'page'" th:href="@{/mnb}">SOAP</a>
+                <!-- Forex menüpont, almenüben a hat Forex funkcióval -->
+                <div class="nav-item dropdown"
+                     th:with="forexActive=${active == 'account' or active == 'aktar' or active == 'histar' or active == 'nyit' or active == 'poz' or active == 'zar'}">
+                    <a class="nav-link dropdown-toggle" th:classappend="${forexActive} ? 'active'" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">Forex</a>
+                    <div class="dropdown-menu dropdown-menu-end forex-menu">
+                        <a class="dropdown-item" th:classappend="${active == 'account'} ? 'active'" th:attrappend="aria-current=${active == 'account'} ? 'page'" th:href="@{/account_info}">Forex-account</a>
+                        <a class="dropdown-item" th:classappend="${active == 'aktar'} ? 'active'" th:attrappend="aria-current=${active == 'aktar'} ? 'page'" th:href="@{/actual_prices}">Forex-AktÁr</a>
+                        <a class="dropdown-item" th:classappend="${active == 'histar'} ? 'active'" th:attrappend="aria-current=${active == 'histar'} ? 'page'" th:href="@{/hist_prices}">Forex-HistÁr</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:classappend="${active == 'nyit'} ? 'active'" th:attrappend="aria-current=${active == 'nyit'} ? 'page'" th:href="@{/open_position}">Forex-Nyit</a>
+                        <a class="dropdown-item" th:classappend="${active == 'poz'} ? 'active'" th:attrappend="aria-current=${active == 'poz'} ? 'page'" th:href="@{/positions}">Forex-Poz</a>
+                        <a class="dropdown-item" th:classappend="${active == 'zar'} ? 'active'" th:attrappend="aria-current=${active == 'zar'} ? 'page'" th:href="@{/close_position}">Forex-Zár</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="site-footer">
+    <div class="container page-shell footer-inner">
+        <a class="navbar-brand brand-lockup" th:href="@{/}"><span class="brand-mark">Á</span> MNB ÁRFOLYAMFIGYELŐ</a>
+        <span>Hivatalos devizaárfolyamok</span>
+        <span class="footer-team" th:text="${team}">Projektcsapat</span>
+    </div>
+</footer>
+
+<!-- A Bootstrap JS kell a mobilos menü (navbar-toggler) nyitásához-zárásához -->
+<th:block th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
+
+</body>
+</html>
