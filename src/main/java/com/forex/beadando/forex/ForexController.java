@@ -33,15 +33,15 @@ public class ForexController {
     Context ctx = new Context(Config.URL, Config.TOKEN);
 
     @GetMapping("/account_info")
-    @ResponseBody
-    public AccountSummary accountInfo() {
+    public String accountInfo(Model model) {
         try {
             AccountSummary summary = ctx.account.summary(Config.ACCOUNTID).getAccount();
-            return summary;
+            model.addAttribute("summary", summary);
         } catch (Exception e) {
             e.printStackTrace();
+            model.addAttribute("error", "A számlainformációk lekérdezése nem sikerült: " + e.getMessage());
         }
-        return null;
+        return "account_info";
     }
 
     @GetMapping("/actual_prices")
