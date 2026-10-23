@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-Zár')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('zar')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA KERESKEDÉS</div>
+                <h1>Pozíció zárása</h1>
+                <p>Add meg a zárni kívánt pozíció Trade ID-ját, és lezárjuk piaci áron.</p>
+            </div>
+            <a class="back-link" th:href="@{/positions}">Nyitott pozíciók →</a>
+        </div>
+
+        <section class="query-card" aria-labelledby="query-title">
+            <div class="query-title-row"><div><span class="eyebrow">ZÁRÁS</span><h2 id="query-title">Melyik pozíciót zárjuk?</h2></div></div>
+            <form th:action="@{/close_position}" th:object="${param}" method="post">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-9 col-md-8"><label class="form-label" for="tradeId">Trade ID</label>
+                        <input class="form-control form-control-lg" id="tradeId" type="number" min="1" step="1" th:field="*{tradeId}" required>
+                        <div class="form-text">A Trade ID a Forex-Poz táblázatban, illetve pozíciónyitás után látható.</div>
+                    </div>
+                    <div class="col-lg-3 col-md-4"><button class="btn btn-primary btn-lg w-100 search-button" type="submit">Pozíció zárása <span aria-hidden="true">→</span></button></div>
+                </div>
+            </form>
+        </section>
+        <div class="initial-state"><span class="initial-icon">!</span><div><strong>A zárás azonnal, piaci áron történik</strong><p>A devizapiac hétfőtől péntekig van nyitva, hétvégén pozíciót zárni sem lehet.</p></div></div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

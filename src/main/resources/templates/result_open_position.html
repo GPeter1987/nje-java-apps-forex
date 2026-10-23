@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-Nyit')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('nyit')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA KERESKEDÉS</div>
+                <h1 th:text="${fill} ? 'Pozíció megnyitva' : 'A pozíció nem nyílt meg'">Pozíció megnyitva</h1>
+                <p>Instrumentum: <strong th:text="${instr}">EUR_USD</strong> · Mennyiség: <strong th:text="${units}">10</strong></p>
+            </div>
+            <a class="back-link" th:href="@{/open_position}">← Másik pozíció nyitása</a>
+        </div>
+
+        <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}">A megbízás nem teljesült.</div>
+
+        <th:block th:if="${fill}">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">TRADE ID</span>
+                    <strong th:text="${fill.id}">123</strong>
+                    <span>Ezzel az azonosítóval zárható a Forex-Zár menüben</span>
+                </article></div>
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">IRÁNY</span>
+                    <strong th:text="${units > 0} ? 'Long' : 'Short'">Long</strong>
+                    <span th:text="${units > 0} ? 'Vételi pozíció' : 'Eladási pozíció'">Vételi pozíció</span>
+                </article></div>
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">NYITÓÁR</span>
+                    <strong th:text="${fill.price}">1.08000</strong>
+                    <span>Piaci áron teljesült</span>
+                </article></div>
+            </div>
+
+            <article class="table-card">
+                <div class="card-heading"><div><span class="eyebrow">RÉSZLETEK</span><h3 th:text="${id}">tradeId: 123</h3></div><a class="table-source" th:href="@{/positions}">Nyitott pozíciók →</a></div>
+                <div class="table-responsive"><table class="table align-middle rate-table">
+                    <tbody>
+                    <tr><th scope="row">Trade ID</th><td class="text-end" th:text="${fill.id}">123</td></tr>
+                    <tr><th scope="row">Instrumentum</th><td class="text-end"><span class="currency-pill" th:text="${fill.instrument}">EUR_USD</span></td></tr>
+                    <tr><th scope="row">Mennyiség</th><td class="text-end" th:text="${fill.units}">10</td></tr>
+                    <tr><th scope="row">Nyitóár</th><td class="text-end rate-value" th:text="${fill.price}">1.08000</td></tr>
+                    <tr><th scope="row">Időpont (UTC)</th><td class="text-end" th:text="${#strings.replace(#strings.substring(fill.time.toString(), 0, 19), 'T', ' ')}">2026-01-01 00:00:00</td></tr>
+                    </tbody>
+                </table></div>
+            </article>
+        </th:block>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

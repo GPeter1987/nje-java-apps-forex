@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-AktÁr')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('aktar')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA ÉLŐ ÁRFOLYAM</div>
+                <h1>Aktuális ár</h1>
+                <p>Instrumentum: <strong th:text="${instr}">EUR_USD</strong></p>
+            </div>
+            <a class="back-link" th:href="@{/actual_prices}">← Másik instrumentum választása</a>
+        </div>
+
+        <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}">A lekérdezés nem sikerült.</div>
+
+        <th:block th:each="p : ${prices}">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">VÉTELI ÁR (BID)</span>
+                    <strong th:text="${p.bids[0].price}">1.08000</strong>
+                    <span>Ezen az áron tudsz eladni</span>
+                </article></div>
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">ELADÁSI ÁR (ASK)</span>
+                    <strong th:text="${p.asks[0].price}">1.08010</strong>
+                    <span>Ezen az áron tudsz venni</span>
+                </article></div>
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">SPREAD</span>
+                    <strong th:text="${p.asks[0].price.bigDecimalValue().subtract(p.bids[0].price.bigDecimalValue())}">0.00010</strong>
+                    <span>Az eladási és a vételi ár különbsége</span>
+                </article></div>
+            </div>
+
+            <article class="table-card">
+                <div class="card-heading"><div><span class="eyebrow">RÉSZLETEK</span><h3 th:text="${p.instrument}">EUR_USD</h3></div><span class="table-source">Forrás: Oanda v20 API</span></div>
+                <div class="table-responsive"><table class="table align-middle rate-table">
+                    <tbody>
+                    <tr><th scope="row">Instrumentum</th><td class="text-end"><span class="currency-pill" th:text="${p.instrument}">EUR_USD</span></td></tr>
+                    <tr><th scope="row">Időpont (UTC)</th><td class="text-end" th:text="${#strings.replace(#strings.substring(p.time.toString(), 0, 19), 'T', ' ')}">2026-01-01 00:00:00</td></tr>
+                    <tr><th scope="row">Vételi ár (bid)</th><td class="text-end rate-value" th:text="${p.bids[0].price}">1.08000</td></tr>
+                    <tr><th scope="row">Eladási ár (ask)</th><td class="text-end rate-value" th:text="${p.asks[0].price}">1.08010</td></tr>
+                    <tr><th scope="row">Zárási vételi ár (closeout bid)</th><td class="text-end rate-value" th:text="${p.closeoutBid}">1.07990</td></tr>
+                    <tr><th scope="row">Zárási eladási ár (closeout ask)</th><td class="text-end rate-value" th:text="${p.closeoutAsk}">1.08020</td></tr>
+                    <tr><th scope="row">Kereskedhető</th><td class="text-end" th:text="${p.tradeable} ? 'Igen' : 'Nem (a piac zárva)'">Igen</td></tr>
+                    </tbody>
+                </table></div>
+            </article>
+        </th:block>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

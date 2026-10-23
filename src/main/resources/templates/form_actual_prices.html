@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-AktÁr')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('aktar')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA ÉLŐ ÁRFOLYAM</div>
+                <h1>Aktuális ár</h1>
+                <p>Válassz egy instrumentumot, és lekérdezzük az Oanda aktuális vételi és eladási árát.</p>
+            </div>
+            <a class="back-link" th:href="@{/}">← Vissza a főoldalra</a>
+        </div>
+
+        <section class="query-card" aria-labelledby="query-title">
+            <div class="query-title-row"><div><span class="eyebrow">ÚJ LEKÉRDEZÉS</span><h2 id="query-title">Válaszd ki az instrumentumot</h2></div></div>
+            <form th:action="@{/actual_prices}" th:object="${par}" method="post">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-9 col-md-8"><label class="form-label" for="instrument">Instrumentum</label>
+                        <select class="form-select form-select-lg" id="instrument" th:field="*{instrument}" required>
+                            <option th:each="instr : ${instruments}" th:value="${instr}" th:text="${instr}">EUR_USD</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-4"><button class="btn btn-primary btn-lg w-100 search-button" type="submit">Lekérdezés <span aria-hidden="true">→</span></button></div>
+                </div>
+            </form>
+        </section>
+        <div class="initial-state"><span class="initial-icon">↗</span><div><strong>A devizapiac hétfőtől péntekig van nyitva</strong><p>Hétvégén a legutolsó, pénteki záróár jelenik meg.</p></div></div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-Poz')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('poz')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA KERESKEDÉS</div>
+                <h1>Nyitott pozíciók</h1>
+                <p>A számlán jelenleg nyitott trade-ek. A Trade ID-val zárhatók a Forex-Zár menüben.</p>
+            </div>
+            <a class="back-link" th:href="@{/open_position}">← Új pozíció nyitása</a>
+        </div>
+
+        <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}">A lekérdezés nem sikerült.</div>
+
+        <th:block th:if="${trades != null}">
+            <div class="empty-state" th:if="${#lists.isEmpty(trades)}"><span class="empty-icon">⌁</span>
+                <h3>Nincs nyitott pozíció</h3>
+                <p>Pozíciót a Forex-Nyit menüben nyithatsz.</p>
+            </div>
+
+            <article class="table-card" th:if="${!#lists.isEmpty(trades)}">
+                <div class="card-heading"><div><span class="eyebrow">NYITOTT TRADE-EK</span><h3>Pozíciók</h3></div><span class="result-count" th:text="${#lists.size(trades)} + ' db'">0 db</span></div>
+                <div class="table-responsive"><table class="table align-middle rate-table">
+                    <thead><tr><th>Trade ID</th><th>Instrumentum</th><th>Nyitás ideje (UTC)</th><th>Irány</th><th class="text-end">Mennyiség</th><th class="text-end">Nyitóár</th><th class="text-end">Nem realizált P/L</th><th></th></tr></thead>
+                    <tbody><tr th:each="trade : ${trades}">
+                        <td class="rate-value" th:text="${trade.id}">123</td>
+                        <td><span class="currency-pill" th:text="${trade.instrument}">EUR_USD</span></td>
+                        <td th:text="${#strings.replace(#strings.substring(trade.openTime.toString(), 0, 19), 'T', ' ')}">2026-01-01 00:00:00</td>
+                        <td th:text="${trade.currentUnits.doubleValue() > 0} ? 'Long' : 'Short'">Long</td>
+                        <td class="text-end" th:text="${trade.currentUnits}">10</td>
+                        <td class="text-end" th:text="${trade.price}">1.08000</td>
+                        <td class="text-end rate-value" th:text="${trade.unrealizedPL}">0.0000</td>
+                        <td class="text-end"><a class="back-link" th:href="@{/close_position(tradeId=${trade.id})}">Zárás →</a></td>
+                    </tr></tbody>
+                </table></div>
+            </article>
+        </th:block>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

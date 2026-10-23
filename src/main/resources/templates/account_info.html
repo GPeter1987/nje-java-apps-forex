@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Forex-account')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('account')}"></nav>
+
+<main class="rates-page">
+    <div class="container page-shell">
+        <div class="rates-heading">
+            <div><div class="eyebrow"><span class="status-dot"></span> OANDA DEMO SZÁMLA</div>
+                <h1>Számlainformációk</h1>
+                <p>A Forex-kereskedéshez használt Oanda számla aktuális adatai.</p>
+            </div>
+            <a class="back-link" th:href="@{/}">← Vissza a főoldalra</a>
+        </div>
+
+        <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}">A lekérdezés nem sikerült.</div>
+
+        <th:block th:if="${summary}">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">EGYENLEG</span>
+                    <strong th:text="${#numbers.formatDecimal(summary.balance.bigDecimalValue(), 1, 'WHITESPACE', 2, 'COMMA')}">100 000,00</strong>
+                    <span th:text="${summary.currency}">GBP</span>
+                </article></div>
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">NETTÓ ESZKÖZÉRTÉK (NAV)</span>
+                    <strong th:text="${#numbers.formatDecimal(summary.NAV.bigDecimalValue(), 1, 'WHITESPACE', 2, 'COMMA')}">100 000,00</strong>
+                    <span th:text="${summary.currency}">GBP</span>
+                </article></div>
+                <div class="col-md-4"><article class="stat-card">
+                    <span class="eyebrow">NEM REALIZÁLT P/L</span>
+                    <strong th:text="${#numbers.formatDecimal(summary.unrealizedPL.bigDecimalValue(), 1, 'WHITESPACE', 2, 'COMMA')}">0,00</strong>
+                    <span th:text="${summary.currency}">GBP</span>
+                </article></div>
+            </div>
+
+            <article class="table-card">
+                <div class="card-heading"><div><span class="eyebrow">RÉSZLETEK</span><h3>Számla adatai</h3></div><span class="table-source">Forrás: Oanda v20 API</span></div>
+                <div class="table-responsive"><table class="table align-middle rate-table">
+                    <tbody>
+                    <tr><th scope="row">Számlaazonosító</th><td class="text-end" th:text="${summary.id}">101-004-0000000-001</td></tr>
+                    <tr><th scope="row">Név (alias)</th><td class="text-end" th:text="${summary.alias}">Primary</td></tr>
+                    <tr><th scope="row">Pénznem</th><td class="text-end"><span class="currency-pill" th:text="${summary.currency}">GBP</span></td></tr>
+                    <tr><th scope="row">Létrehozva</th><td class="text-end" th:text="${#strings.replace(#strings.substring(summary.createdTime.toString(), 0, 19), 'T', ' ')}">2026-01-01 00:00:00</td></tr>
+                    <tr><th scope="row">Egyenleg</th><td class="text-end rate-value" th:text="${summary.balance}">100000.0000</td></tr>
+                    <tr><th scope="row">Nettó eszközérték (NAV)</th><td class="text-end rate-value" th:text="${summary.NAV}">100000.0000</td></tr>
+                    <tr><th scope="row">Nem realizált P/L</th><td class="text-end rate-value" th:text="${summary.unrealizedPL}">0.0000</td></tr>
+                    <tr><th scope="row">Realizált P/L</th><td class="text-end rate-value" th:text="${summary.pl}">0.0000</td></tr>
+                    <tr><th scope="row">Tőkeáttétel (margin rate)</th><td class="text-end rate-value" th:text="${summary.marginRate}">0.0333</td></tr>
+                    <tr><th scope="row">Lekötött fedezet</th><td class="text-end rate-value" th:text="${summary.marginUsed}">0.0000</td></tr>
+                    <tr><th scope="row">Szabad fedezet</th><td class="text-end rate-value" th:text="${summary.marginAvailable}">100000.0000</td></tr>
+                    <tr><th scope="row">Nyitott trade-ek</th><td class="text-end" th:text="${summary.openTradeCount}">0</td></tr>
+                    <tr><th scope="row">Nyitott pozíciók</th><td class="text-end" th:text="${summary.openPositionCount}">0</td></tr>
+                    <tr><th scope="row">Függő megbízások</th><td class="text-end" th:text="${summary.pendingOrderCount}">0</td></tr>
+                    <tr><th scope="row">Utolsó tranzakció azonosítója</th><td class="text-end" th:text="${summary.lastTransactionID}">1</td></tr>
+                    </tbody>
+                </table></div>
+            </article>
+        </th:block>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

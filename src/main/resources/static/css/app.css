@@ -163,3 +163,23 @@ a { text-decoration: none; }
     .visual-chart { height: 164px; }
     .footer-inner > span:nth-child(2) { display: none; }
 }
+
+/* Forex lenyíló almenü */
+.forex-menu { background: var(--surface-raised); border: 1px solid var(--line); border-radius: 12px; padding: 6px; min-width: 190px; }
+.forex-menu .dropdown-item { color: #aeb8bd; font-size: .9rem; border-radius: 8px; padding: 7px 12px; }
+.forex-menu .dropdown-item:hover, .forex-menu .dropdown-item:focus { background: rgba(69, 216, 181, .08); color: var(--accent); }
+.forex-menu .dropdown-item.active { background: rgba(69, 216, 181, .14); color: var(--accent); }
+.forex-menu .dropdown-divider { border-color: var(--line); margin: 5px 4px; }
+
+/* Forex oldalak: kiemelt számadatok és sorfejléces táblázat */
+.stat-card { height: 100%; display: flex; flex-direction: column; gap: 6px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 14px; background: rgba(28,34,39,.92); }
+.stat-card strong { font-size: 1.7rem; font-weight: 700; letter-spacing: -.03em; color: var(--ink); }
+.stat-card > span:last-child { color: var(--muted); font-size: .8rem; }
+.rate-table tbody th { color: var(--muted); font-weight: 500; }
+
+/* Összecsukható menü – lg alatt a hamburger gomb nyitja */
+@media (max-width: 991.98px) {
+    .site-nav .navbar-collapse { padding: 8px 0 14px; }
+    .site-nav .navbar-nav .nav-link { padding-top: 7px; padding-bottom: 7px; }
+    .forex-menu { border: 0; background: transparent; padding: 0 0 0 12px; }
+}

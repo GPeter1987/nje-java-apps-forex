@@ -4,7 +4,6 @@ import com.forex.beadando.mnb.ExchangeRate;
 import com.forex.beadando.mnb.ExchangeRateQuery;
 import com.forex.beadando.mnb.MnbExchangeRateClient;
 import com.forex.beadando.mnb.MnbServiceException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,17 +16,9 @@ import java.util.List;
 @Controller
 public class MnbController {
     private final MnbExchangeRateClient exchangeRateClient;
-    private final String team;
 
-    public MnbController(MnbExchangeRateClient exchangeRateClient,
-                         @Value("${app.team:Projektcsapat}") String team) {
+    public MnbController(MnbExchangeRateClient exchangeRateClient) {
         this.exchangeRateClient = exchangeRateClient;
-        this.team = team;
-    }
-
-    @ModelAttribute("team")
-    public String team() {
-        return team;
     }
 
     @GetMapping("/mnb")
