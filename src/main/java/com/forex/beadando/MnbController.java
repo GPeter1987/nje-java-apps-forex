@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -43,8 +44,10 @@ public class MnbController {
             List<ExchangeRate> rates = exchangeRateClient.getExchangeRates(
                     query.getStartDate(), query.getEndDate(), query.getCurrency());
             model.addAttribute("rates", rates);
-            model.addAttribute("chartLabels", rates.stream().map(rate -> rate.date().toString()).toList());
-            model.addAttribute("chartValues", rates.stream().map(rate -> rate.hufPerUnit()).toList());
+            // Az MNB a legfrissebb nappal kezdi a listát; a grafikon időrendben (régi → új) rajzol
+            List<ExchangeRate> chartRates = rates.stream().sorted(Comparator.comparing(ExchangeRate::date)).toList();
+            model.addAttribute("chartLabels", chartRates.stream().map(rate -> rate.date().toString()).toList());
+            model.addAttribute("chartValues", chartRates.stream().map(rate -> rate.hufPerUnit()).toList());
             model.addAttribute("searched", true);
         } catch (MnbServiceException exception) {
             model.addAttribute("error", exception.getMessage());

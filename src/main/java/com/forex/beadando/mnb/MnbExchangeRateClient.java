@@ -35,7 +35,7 @@ public class MnbExchangeRateClient {
     private final String endpoint;
     private final HttpClient httpClient;
 
-    public MnbExchangeRateClient(@Value("${mnb.endpoint:https://www.mnb.hu/arfolyamok.asmx}") String endpoint) {
+    public MnbExchangeRateClient(@Value("${mnb.endpoint:http://www.mnb.hu/arfolyamok.asmx}") String endpoint) {
         this.endpoint = endpoint;
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))

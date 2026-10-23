@@ -1,10 +1,14 @@
 package com.forex.beadando.mnb;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 
 public class ExchangeRateQuery {
     private String currency = "EUR";
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate = LocalDate.now().minusDays(30);
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate = LocalDate.now();
 
     public String getCurrency() {

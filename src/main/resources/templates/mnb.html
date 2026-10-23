@@ -38,7 +38,7 @@
         <section class="results-section" th:if="${searched}" aria-live="polite">
             <div class="results-heading">
                 <div><div class="eyebrow">LEKÉRDEZÉS EREDMÉNYE</div><h2 th:text="${query.currency} + ' / HUF'">EUR / HUF</h2>
-                    <p th:text="${#temporals.format(query.startDate, 'yyyy. MM. dd.')} + ' – ' + #temporals.format(query.endDate, 'yyyy. MM. dd.')">Időszak</p>
+                    <p th:text="${#temporals.format(query.startDate, 'yyyy. MM. dd.') + ' – ' + #temporals.format(query.endDate, 'yyyy. MM. dd.')}">Időszak</p>
                 </div><span class="result-count" th:text="${#lists.size(rates)} + ' adatpont'">0 adatpont</span>
             </div>
             <div class="empty-state" th:if="${#lists.isEmpty(rates)}"><span class="empty-icon">⌁</span>
